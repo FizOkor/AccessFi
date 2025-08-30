@@ -85,7 +85,7 @@ export default function App() {
       </header>
 
       {/* Hero Section */}
-      <section className="text-center py-16 px-6">
+      <section className="text-center py-16 px-6 h-screen">
         <motion.h2
           className="text-4xl md:text-6xl font-extrabold mb-4 text-yellow-400"
           initial={{ opacity: 0, y: 30 }}
