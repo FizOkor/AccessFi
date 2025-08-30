@@ -12,7 +12,13 @@
     }
   ],
   "routes": [
+    // Backend API
     { "src": "/api/(.*)", "dest": "/src/backend/index.js" },
-    { "src": "/(.*)", "dest": "/index.html" }
+
+    // Serve static assets directly
+    { "src": "/(assets/.*)", "dest": "/dist/$1" },
+
+    // Fallback: serve index.html for SPA routing
+    { "src": "/(.*)", "dest": "/dist/index.html" }
   ]
 }
