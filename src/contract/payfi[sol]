@@ -1,38 +1,73 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.26;
+pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+contract Paywall {
+    address public owner;
 
-contract NFTGen is ERC721URIStorage, Ownable {
-    uint256 private _tokenIds;
+    // contentId => price (in wei)
+    mapping(string => uint256) public price;
 
-    event NFTMinted(address indexed to, uint256 indexed tokenId);
+    // user => contentId => access
+    mapping(address => mapping(string => bool)) public hasAccess;
 
-    constructor(address initialOwner)
-        ERC721("Fiz NFT Collection", "FIZ")
-        Ownable(initialOwner)
-    {} 
+    // Keep a dynamic list of content IDs
+    string[] private contentIds;
+    mapping(string => bool) private contentExists;
 
-    /// new NFT from tokennn
-    function mintNFT(address recipient, string memory tokenURI)
-        public
-        onlyOwner
-        returns (uint256)
-    {
-        _tokenIds++;
+    event PriceSet(string indexed contentId, uint256 price);
+    event AccessGranted(string indexed contentId, address indexed user, uint256 amount);
 
-        uint256 newItemId = _tokenIds;
-        _mint(recipient, newItemId);
-        _setTokenURI(newItemId, tokenURI);
-
-        emit NFTMinted(recipient, newItemId);
-
-        return newItemId;
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not contract owner");
+        _;
     }
 
-    /// no. of tokens minted
-    function totalSupply() public view returns (uint256) {
-        return _tokenIds;
+    constructor() {
+        owner = msg.sender;
+    }
+
+    /// @notice Set price for a given content
+    function setPrice(string calldata contentId, uint256 _price) external onlyOwner {
+        price[contentId] = _price;
+
+        // Add to contentIds array if not already there
+        if (!contentExists[contentId]) {
+            contentIds.push(contentId);
+            contentExists[contentId] = true;
+        }
+
+        emit PriceSet(contentId, _price);
+    }
+
+    /// @notice Unlock content by paying exact price
+    function unlock(string calldata contentId) external payable {
+        uint256 requiredPrice = price[contentId];
+        require(requiredPrice > 0, "Content not available");
+        require(msg.value == requiredPrice, "Incorrect payment");
+
+        hasAccess[msg.sender][contentId] = true;
+
+        emit AccessGranted(contentId, msg.sender, msg.value);
+    }
+
+    /// @notice Owner withdraws collected funds
+    function withdraw(address payable _to) external onlyOwner {
+        require(address(this).balance > 0, "Nothing to withdraw");
+        _to.transfer(address(this).balance);
+    }
+
+    /// @notice Check access (for backend/frontend API)
+    function checkAccess(address user, string calldata contentId) external view returns (bool) {
+        return hasAccess[user][contentId];
+    }
+
+    /// @notice Retrieve all content IDs
+    function getContentIds() external view returns (string[] memory) {
+        return contentIds;
+    }
+
+    /// @notice Get price of a content ID
+    function getPrice(string calldata contentId) external view returns (uint256) {
+        return price[contentId];
     }
 }

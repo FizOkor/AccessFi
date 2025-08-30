@@ -9,9 +9,9 @@
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "contentId",
-				"type": "bytes32"
+				"type": "string"
 			},
 			{
 				"indexed": true,
@@ -34,9 +34,9 @@
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "contentId",
-				"type": "bytes32"
+				"type": "string"
 			},
 			{
 				"indexed": false,
@@ -51,9 +51,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "contentId",
-				"type": "bytes32"
+				"type": "string"
 			},
 			{
 				"internalType": "uint256",
@@ -69,9 +69,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "contentId",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "unlock",
@@ -100,9 +100,9 @@
 				"type": "address"
 			},
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "contentId",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "checkAccess",
@@ -117,6 +117,38 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "getContentIds",
+		"outputs": [
+			{
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "contentId",
+				"type": "string"
+			}
+		],
+		"name": "getPrice",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -124,9 +156,9 @@
 				"type": "address"
 			},
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "hasAccess",
@@ -156,9 +188,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "price",

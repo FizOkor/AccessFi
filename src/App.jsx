@@ -69,7 +69,15 @@ export default function App() {
     <div className="min-h-screen bg-gray-950 text-white flex flex-col">
       {/* Navbar */}
       <header className="flex justify-between items-center p-4 border-b border-gray-800 px-12">
-        <h1 className="text-3xl font-bold text-yellow-400">AccessFi</h1>
+        <div className="flex items-center gap-2">
+          <img
+            src="https://img.icons8.com/fluency/48/unlock.png"
+            alt="logo"
+            className="w-8 h-8"
+          />
+          <h1 className="text-3xl font-bold text-yellow-400">AccessFi</h1>
+        </div>
+
         {account ? (
           <span className="text-sm bg-gray-800 px-3 py-1 rounded-full">
             {account.slice(0, 6)}...{account.slice(-4)}
@@ -84,8 +92,9 @@ export default function App() {
         )}
       </header>
 
+
       {/* Hero Section */}
-      <section className="text-center py-16 px-6 h-screen">
+      <section className="text-center py-16 px-6 h-screen flex flex-col items-center justify-center">
         <motion.h2
           className="text-4xl md:text-6xl font-extrabold mb-4 text-yellow-400"
           initial={{ opacity: 0, y: 30 }}
@@ -100,7 +109,7 @@ export default function App() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          Pay only for what you want. No subscriptions. No middlemen. 
+          Pay only for what you want. No subscriptions. No middlemen.
           Own your access with instant blockchain payments.
         </motion.p>
         <motion.button

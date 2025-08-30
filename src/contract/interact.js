@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import abi from "./abi.json";
 import { CONTRACT_ADDRESS } from "./contract.js";
+
+// ================= Wallet Connection =================
 
 export const connectWallet = async () => {
   if (!window.ethereum) {
@@ -15,52 +16,34 @@ export const connectWallet = async () => {
       params: [{ eth_accounts: {} }],
     });
 
-    // account picker
-    const accounts = await window.ethereum.request({
-      method: "eth_requestAccounts", // account selection
-    });
+    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
 
-    if (!accounts || accounts.length === 0) {
-      throw new Error("No account selected");
-    }
+    if (!accounts || accounts.length === 0) throw new Error("No account selected");
 
-    const selectedAccount = accounts[0];
-
-    return selectedAccount;
+    return accounts[0];
   } catch (error) {
     console.error("Connection failed:", error);
-
-    if (error.code === 4001) {
-      alert("Connection rejected - please connect to continue");
-    } else {
-      alert("Failed to connect wallet");
-    }
-
+    if (error.code === 4001) alert("Connection rejected - please connect to continue");
+    else alert("Failed to connect wallet");
     return null;
   }
 };
 
 export const getCurrentWallet = async () => {
-  if (typeof window.ethereum !== "undefined") {
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const accounts = await provider.send("eth_accounts", []);
-      if (accounts.length > 0) {
-        return accounts[0];
-      }
-      console.error("No accounts found");
-      return null;
-    } catch {
-      console.error("Connect Wallet");
-      return null;
-    }
-  } else {
-    console.warn("Ethereum provider not found, Please Install Metmask!");
+  if (!window.ethereum) return null;
+
+  try {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const accounts = await provider.send("eth_accounts", []);
+    return accounts.length > 0 ? accounts[0] : null;
+  } catch {
+    console.error("Connect Wallet");
     return null;
   }
 };
 
-// Get contract instance
+// ================= Contract Instance =================
+
 export const getPaywallContract = async () => {
   if (!window.ethereum) throw new Error("MetaMask not found");
 
@@ -69,23 +52,16 @@ export const getPaywallContract = async () => {
   return new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
 };
 
-// Unlock content (pay to access)
+// ================= Unlock Content =================
+
 export const unlockContent = async (contentId) => {
   try {
     const contract = await getPaywallContract();
-    const contentKey = ethers.id(contentId); // keccak256 hash of string
-    const price = await contract.price(contentKey);
+    const price = await contract.price(contentId); // string-based contentId
+    console.log(contentId, price)
 
-    const tx = await contract.unlock(contentKey, { value: price });
-    // console.log("tx sent:", tx.hash);
-
-    tx.wait()
-      .then((receipt) => {
-        console.log("Tx confirmed:", receipt);
-      })
-      .catch((err) => {
-        console.warn("Tx confirmation error:", err);
-      });
+    const tx = await contract.unlock(contentId, { value: price });
+    // await tx.wait();
 
     return { success: true, txHash: tx.hash };
   } catch (err) {
@@ -94,27 +70,40 @@ export const unlockContent = async (contentId) => {
   }
 };
 
-// Check access
+// ================= Check Access =================
+
 export const checkAccess = async (address, contentId) => {
   try {
     const contract = await getPaywallContract();
-    const contentKey = ethers.id(contentId);
-    return await contract.checkAccess(address, contentKey);
+    return await contract.checkAccess(address, contentId);
   } catch (err) {
     console.error("Check access failed:", err);
     return false;
   }
 };
 
-// Get price for a piece of content
+// ================= Get Price =================
+
 export const getPrice = async (contentId) => {
   try {
     const contract = await getPaywallContract();
-    const contentKey = ethers.id(contentId);
-    const rawPrice = await contract.price(contentKey);
+    const rawPrice = await contract.price(contentId);
     return ethers.formatEther(rawPrice); // returns readable SHM/ETH
   } catch (err) {
     console.error("Get price failed:", err);
     return null;
+  }
+};
+
+// ================= Fetch Content List from Backend =================
+
+export const fetchContentList = async () => {
+  try {
+    const res = await fetch("/api/content-list");
+    const data = await res.json();
+    return data; // [{ id: "article-1", price: "0.001" }, ...]
+  } catch (err) {
+    console.error("Fetch content list failed:", err);
+    return [];
   }
 };
