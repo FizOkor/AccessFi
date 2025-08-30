@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import abi from "../contract/abi.json" assert { type: "json" };
+import abi from "../contract/abi.json" with { type: "json" };
 
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const contract = new ethers.Contract(process.env.CONTRACT_ADDRESS, abi, provider);
