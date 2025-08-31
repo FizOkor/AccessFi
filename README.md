@@ -42,12 +42,13 @@ const contentList = [
   { id: "video-1", title: "Secret Video", price: "0.002 SHM" },
   { id: "podcast-1", title: "Private Podcast", price: "0.0015 SHM" }
 ];
-
+```
 ## ⚙️ Backend Environment Variables
 
 ```env
 RPC_URL=https://rpc.shardeum.org/unstablenet
 CONTRACT_ADDRESS=0xYourDeployedContractAddress
+```
 
 ## 🔄 Usage Flow
 
@@ -84,6 +85,7 @@ CONTRACT_ADDRESS=0xYourDeployedContractAddress
 cd src/backend
 npm install
 # Create .env file with RPC_URL and CONTRACT_ADDRESS
+```
 
 ## 🎨 Frontend
 
@@ -92,6 +94,7 @@ cd frontend
 npm install
 npm run dev
 # Connect wallet, browse, and unlock content
+```
 
 ## 📋 Next Steps / TODO
 
