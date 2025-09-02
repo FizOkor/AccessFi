@@ -2,12 +2,20 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { connectWallet, getCurrentWallet } from './contract/interact.js';
 import { unlockContent, checkAccess } from "./contract/interact.js";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount } from 'wagmi';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useAccountModal } from '@rainbow-me/rainbowkit';
 import './App.css';
 
 export default function App() {
-  const [account, setAccount] = useState(null);
+  const [acc, setAcc] = useState('');
   const [unlockedContent, setUnlockedContent] = useState({});
   const [loadingContent, setLoadingContent] = useState({});
+
+  const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const { openAccountModal } = useAccountModal();
 
   const contentList = [
     { id: "article-1", title: "Exclusive Article", price: "0.001 SHM" },
@@ -21,14 +29,14 @@ export default function App() {
   // Wallet connect
   const handleConnect = async () => {
     const selectedAccount = await connectWallet();
-    setAccount(selectedAccount);
+    setAcc(selectedAccount);
   };
 
   useEffect(() => {
     const fetchWallet = async () => {
       try {
         const currentAccount = await getCurrentWallet();
-        setAccount(currentAccount);
+        setAcc(currentAccount);
       } catch (error) {
         console.error("Error in fetching wallet:", error);
       }
@@ -38,13 +46,14 @@ export default function App() {
 
   // Unlock
   const handleUnlock = async (contentId) => {
-    if (!account) return alert("Connect Wallet");
+    if (!address) return alert("Connect Wallet");
+    console.log(address);
     setLoadingContent((prev) => ({ ...prev, [contentId]: true }));
 
     try {
       const result = await unlockContent(contentId);
       if (result.success) {
-        const has = await checkAccess(account, contentId);
+        const has = await checkAccess(address, contentId);
         if (has) {
           setUnlockedContent((prev) => ({ ...prev, [contentId]: true }));
         }
@@ -60,8 +69,8 @@ export default function App() {
 
   // Check access
   const handleCheckAccess = async (contentId) => {
-    if (!account) return alert("Connect Wallet");
-    const has = await checkAccess(account, contentId);
+    if (!address) return alert("Connect Wallet");
+    const has = await checkAccess(address, contentId);
     setUnlockedContent((prev) => ({ ...prev, [contentId]: has }));
   };
 
@@ -77,19 +86,31 @@ export default function App() {
           />
           <h1 className="text-3xl font-bold text-yellow-400">AccessFi</h1>
         </div>
+        <ConnectButton.Custom>
+          {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
+            const connected = mounted && account && chain;
+            {/* if (connected) setAcc(account); */ }
+            return (
+              <div>
+                {!connected ? (
+                  <button onClick={openConnectModal}
+                    type="button"
+                    className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold hover:bg-yellow-300 transition"
+                  >
+                    Connect Wallet
+                  </button>
+                ) : (
+                  <button onClick={openAccountModal} type="button"
+                    className="bg-gray-800 text-gray-400 px-4 py-2 rounded-xl font-semibold hover:bg-gray-600 transition"
+                  >
+                    {isConnected ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''}
+                  </button>
+                )}
+              </div>
+            );
+          }}
+        </ConnectButton.Custom>
 
-        {account ? (
-          <span className="text-sm bg-gray-800 px-3 py-1 rounded-full">
-            {account.slice(0, 6)}...{account.slice(-4)}
-          </span>
-        ) : (
-          <button
-            onClick={handleConnect}
-            className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold hover:bg-yellow-300 transition"
-          >
-            Connect Wallet
-          </button>
-        )}
       </header>
 
 
@@ -112,13 +133,15 @@ export default function App() {
           Pay only for what you want. No subscriptions. No middlemen.
           Own your access with instant blockchain payments.
         </motion.p>
-        <motion.button
-          onClick={handleConnect}
-          whileTap={{ scale: 0.9 }}
-          className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-bold hover:bg-yellow-300"
-        >
-          Get Started
-        </motion.button>
+        {/* {openConnectModal && ( */}
+          <motion.button
+            onClick={isConnected? openAccountModal : openConnectModal}
+            whileTap={{ scale: 0.9 }}
+            className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-bold hover:bg-yellow-300"
+          >
+            Get Started
+          </motion.button>
+        {/* )} */}
       </section>
 
       {/* Content Grid */}
@@ -172,7 +195,7 @@ export default function App() {
                     ) : (
                       <button
                         onClick={() => handleUnlock(item.id)}
-                        disabled={!account || loadingContent[item.id]}
+                        disabled={!address || loadingContent[item.id]}
                         className="bg-yellow-400 text-black px-3 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-300 flex items-center justify-center"
                       >
                         {loadingContent[item.id] ? (
