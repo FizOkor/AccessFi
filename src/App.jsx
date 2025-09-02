@@ -6,6 +6,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useAccountModal } from '@rainbow-me/rainbowkit';
+import { LockKeyholeOpen } from 'lucide-react';
 import './App.css';
 
 export default function App() {
@@ -26,23 +27,6 @@ export default function App() {
   const lockIcon = "https://img.icons8.com/ios-filled/100/ffffff/lock--v1.png";
   const unlockIcon = "https://img.icons8.com/ios-filled/100/000000/unlock-2.png";
 
-  // Wallet connect
-  const handleConnect = async () => {
-    const selectedAccount = await connectWallet();
-    setAcc(selectedAccount);
-  };
-
-  useEffect(() => {
-    const fetchWallet = async () => {
-      try {
-        const currentAccount = await getCurrentWallet();
-        setAcc(currentAccount);
-      } catch (error) {
-        console.error("Error in fetching wallet:", error);
-      }
-    };
-    fetchWallet();
-  }, []);
 
   // Unlock
   const handleUnlock = async (contentId) => {
@@ -77,19 +61,15 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col">
       {/* Navbar */}
-      <header className="flex justify-between items-center p-4 border-b border-gray-800 px-12">
-        <div className="flex items-center gap-2">
-          <img
-            src="https://img.icons8.com/fluency/48/unlock.png"
-            alt="logo"
-            className="w-8 h-8"
-          />
+      <header className="flex justify-between items-center p-6 border-gray-800 px-12">
+        <div className="flex items-center gap-2 ml-6 text-3xl">
+          <LockKeyholeOpen className="text-yellow-400 h-full" />
           <h1 className="text-3xl font-bold text-yellow-400">AccessFi</h1>
         </div>
+
         <ConnectButton.Custom>
           {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
             const connected = mounted && account && chain;
-            {/* if (connected) setAcc(account); */ }
             return (
               <div>
                 {!connected ? (
@@ -110,14 +90,14 @@ export default function App() {
             );
           }}
         </ConnectButton.Custom>
-
       </header>
 
 
       {/* Hero Section */}
-      <section className="text-center py-16 px-6 h-screen flex flex-col items-center justify-center">
+      <section className="text-center py-16 px-6 h-screen ">
+        <div className='w-[80%] h-[80%] mx-auto m-12 flex flex-col items-center justify-center backdrop-blur-xl bg-white/5 border border-white/20 rounded-2xl shadow-2xl'>
         <motion.h2
-          className="text-4xl md:text-6xl font-extrabold mb-4 text-yellow-400"
+          className="text-4xl md:text-4xl font-extrabold mb-4 text-yellow-400"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
@@ -133,15 +113,14 @@ export default function App() {
           Pay only for what you want. No subscriptions. No middlemen.
           Own your access with instant blockchain payments.
         </motion.p>
-        {/* {openConnectModal && ( */}
-          <motion.button
-            onClick={isConnected? openAccountModal : openConnectModal}
-            whileTap={{ scale: 0.9 }}
-            className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-bold hover:bg-yellow-300"
-          >
-            Get Started
-          </motion.button>
-        {/* )} */}
+        <motion.button
+          onClick={isConnected ? openAccountModal : openConnectModal}
+          whileTap={{ scale: 0.9 }}
+          className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-bold hover:bg-yellow-300"
+        >
+          Get Started
+        </motion.button>
+        </div>
       </section>
 
       {/* Content Grid */}
