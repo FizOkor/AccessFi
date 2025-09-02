@@ -1,63 +1,117 @@
-# AccessFi – Web3 Paywall on Shardeum Unstablenet
+# 🚀 AccessFi – Web3 Paywall on Shardeum Unstablenet
 
-## 🚀 Problem Statement
-In the Web2 world, paywalls and content monetization tools often come with:
-- High fees charged by intermediaries
-- Long settlement times
-- Poor transparency for both creators and users
-- Barriers to microtransactions (too expensive for small payments)
-
-This creates friction for creators who want to monetize directly and fairly, and for users who just want seamless access to premium content.
+> A decentralized paywall DApp that allows creators to monetize content directly and users to unlock access instantly with SHM payments. All payments and access rights are verifiable on-chain. 🔐💎
 
 ---
 
-## 💡 Solution
-**AccessFi** is a decentralized paywall system built on **Shardeum Unstablenet**.  
+## 🤔 Problem
 
-- **Content Creators** can lock digital content (articles, videos, resources) behind a blockchain-based paywall.  
-- **Users** unlock access instantly by paying small amounts of SHM.  
-- Payments and access rights are **verifiable on-chain**, removing intermediaries.  
+**Web2 paywalls suffer from:**
+- 📉 High fees
+- ⏳ Slow settlements
+- 🕵️ Poor transparency
+- 🚫 Barriers to microtransactions
 
-The DApp includes:
-- A **frontend** (React + Tailwind + Framer Motion) for wallet connection, browsing content, and unlocking.  
-- A **smart contract** deployed on Shardeum that stores content IDs and unlock logic.  
-- A **verification API** that returns whether a wallet has unlocked specific content.
+**AccessFi solves these issues using blockchain technology!** ✅
 
 ---
 
-## 🛠 How It Works
+## 🛠️ Solution
 
-### User Flow
-1. **Connect Wallet**: User connects MetaMask to Shardeum Unstablenet.  
-2. **Browse Content**: Content is displayed in a modern, grid-like UI. Locked items show a lock overlay.  
-3. **Unlock Content**: User clicks *Unlock Now* → Smart contract processes payment → Access is granted.  
-4. **Verification API**:  
-   - Third parties (apps, creators, even judges in a hackathon) can confirm access rights by calling:
-     ```
-     GET /api/access?address=0x123...&contentId=article-1
-     ```
-   - Response: `{ "status": "pass" }` or `{ "status": "fail" }`.
+AccessFi lets users:
+1. 🔗 Connect MetaMask to Shardeum Unstablenet
+2. 🔍 Browse locked content
+3. 💰 Pay small SHM amounts to unlock
+4. ✅ Verify access through an API
 
----
+### 🧱 DApp Components
 
-## 🔗 Tech Stack
-- **Blockchain**: [Shardeum Unstablenet](https://shardeum.org/)
-- **Frontend**: React, TailwindCSS, Framer Motion, Ethers.js
-- **Smart Contract**: Solidity
-- **Backend API**: Node.js, Express, Ethers.js
-- **Wallet**: MetaMask
+| Component          | Tech Used                          | Purpose                                  |
+|--------------------|------------------------------------|------------------------------------------|
+| **Frontend**       | React + Tailwind + Framer Motion   | Wallet connection, content browsing, unlocking |
+| **Smart Contract** | Solidity                           | Stores content IDs and unlock logic      |
+| **Backend API**    | Node.js + Express + Ethers.js      | Verifies access rights                   |
 
 ---
 
-## ⚙️ Setup & Installation
+## 🧪 Frontend Demo Content (Hardcoded)
 
-### 1. Smart Contract
-Deploy the `Paywall.sol` contract using Remix IDE:
-- Set `owner` as your wallet address
-- Use Shardeum Liberty Testnet RPC
+```javascript
+const contentList = [
+  { id: "article-1", title: "Exclusive Article", price: "0.001 SHM" },
+  { id: "video-1", title: "Secret Video", price: "0.002 SHM" },
+  { id: "podcast-1", title: "Private Podcast", price: "0.0015 SHM" }
+];
+```
+## ⚙️ Backend Environment Variables
 
-### 2. Frontend
+```env
+RPC_URL=https://rpc.shardeum.org/unstablenet
+CONTRACT_ADDRESS=0xYourDeployedContractAddress
+```
+
+## 🔄 Usage Flow
+
+1. **Connect Wallet**  
+   → MetaMask → Shardeum Unstablenet
+
+2. **Browse Content**  
+   → Locked items show a lock overlay 🔒
+
+3. **Unlock Content**  
+   → Click *Unlock Now* → payment processed → access granted ✅
+
+4. **Verify Access via API**  
+   → `GET /api/access?address=0x123...&contentId=article-1`  
+   → Response: `{ "status": "pass" }` or `{ "status": "fail" }`
+
+---
+
+## 🌐 API Endpoints
+
+| Endpoint                | Method | Description                              | Query Params            |
+|-------------------------|--------|------------------------------------------|-------------------------|
+| `/api/access`           | GET    | Check wallet access to a contentId       | `address`, `contentId`  |
+| `/api/content-list`     | GET    | Fetch all content IDs and prices from SC | -                       |
+
+# 🛠️ Setup
+
+## 📑 Smart Contract
+1. Deploy `Paywall.sol` on Shardeum via [Remix](https://remix.ethereum.org/)
+2. Set owner as your wallet address
+
+## ⚡ Backend
+```bash
+cd src/backend
+npm install
+# Create .env file with RPC_URL and CONTRACT_ADDRESS
+```
+
+## 🎨 Frontend
+
 ```bash
 cd frontend
 npm install
 npm run dev
+# Connect wallet, browse, and unlock content
+```
+
+## 📋 Next Steps / TODO
+
+- [ ] **Replace hardcoded contentList** with dynamic fetch from `/api/content-list`
+- [ ] **Add sorting, filtering, pagination** for content
+- [ ] **Display real-time access status** per wallet in the UI
+- [ ] **Add backend caching** for speed
+- [ ] **Unit tests** for smart contract & API
+
+---
+
+## 🧰 Tech Stack
+
+| Layer            | Technology Used                          |
+|------------------|------------------------------------------|
+| **Blockchain**   | Shardeum Unstablenet                     |
+| **Frontend**     | React, TailwindCSS, Framer Motion, Ethers.js |
+| **Backend**      | Node.js, Express, Ethers.js              |
+| **Smart Contract** | Solidity                               |
+| **Wallet**       | MetaMask                                 |
