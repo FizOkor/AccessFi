@@ -6,7 +6,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useAccountModal } from '@rainbow-me/rainbowkit';
-import { LockKeyholeOpen } from 'lucide-react';
+import { LockKeyholeOpen, Wallet } from 'lucide-react';
 import './App.css';
 
 export default function App() {
@@ -60,66 +60,69 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col">
-      {/* Navbar */}
-      <header className="flex justify-between items-center p-6 border-gray-800 px-12">
-        <div className="flex items-center gap-2 ml-6 text-3xl">
-          <LockKeyholeOpen className="text-yellow-400 h-full" />
-          <h1 className="text-3xl font-bold text-yellow-400">AccessFi</h1>
-        </div>
 
-        <ConnectButton.Custom>
-          {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
-            const connected = mounted && account && chain;
-            return (
-              <div>
-                {!connected ? (
-                  <button onClick={openConnectModal}
-                    type="button"
-                    className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold hover:bg-yellow-300 transition"
-                  >
-                    Connect Wallet
-                  </button>
-                ) : (
-                  <button onClick={openAccountModal} type="button"
-                    className="bg-gray-800 text-gray-400 px-4 py-2 rounded-xl font-semibold hover:bg-gray-600 transition"
-                  >
-                    {isConnected ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''}
-                  </button>
-                )}
-              </div>
-            );
-          }}
-        </ConnectButton.Custom>
-      </header>
 
 
       {/* Hero Section */}
-      <section className="text-center py-16 px-6 h-screen ">
-        <div className='w-[80%] h-[80%] mx-auto m-12 flex flex-col items-center justify-center backdrop-blur-xl bg-white/5 border border-white/20 rounded-2xl shadow-2xl'>
-        <motion.h2
-          className="text-4xl md:text-4xl font-extrabold mb-4 text-yellow-400"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          Unlock Premium Content with Shardeum
-        </motion.h2>
-        <motion.p
-          className="text-gray-300 max-w-2xl mx-auto mb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          Pay only for what you want. No subscriptions. No middlemen.
-          Own your access with instant blockchain payments.
-        </motion.p>
-        <motion.button
-          onClick={isConnected ? openAccountModal : openConnectModal}
-          whileTap={{ scale: 0.9 }}
-          className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-bold hover:bg-yellow-300"
-        >
-          Get Started
-        </motion.button>
+      <section className="text-center px-6 h-screen ">
+        {/* Navbar */}
+        <header className="flex justify-between items-center p-6 border-gray-800 px-12">
+          <div className="flex items-center justify-center gap-2 ml-6 text-3xl">
+            <LockKeyholeOpen className="text-yellow-400 h-full" />
+            <h1 className="text-3xl font-bold text-yellow-400">AccessFi</h1>
+          </div>
+
+          <ConnectButton.Custom>
+            {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
+              const connected = mounted && account && chain;
+              return (
+                <div>
+                  {!connected ? (
+                    <button onClick={openConnectModal}
+                      type="button"
+                      className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold hover:bg-yellow-300 transition"
+                    >
+                      Connect Wallet
+                    </button>
+                  ) : (
+                    <button onClick={openAccountModal} type="button"
+                      className="flex gap-2 items-center justify-center bg-gray-800 text-gray-400 px-4 py-2 rounded-xl font-semibold hover:bg-gray-700 transition"
+                    >
+                      <Wallet className="" />
+                      {isConnected ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''}
+                    </button>
+                  )}
+                </div>
+              );
+            }}
+          </ConnectButton.Custom>
+        </header>
+
+        <div className='w-[70%] h-[70%] mx-auto m-12 flex flex-col items-center justify-center backdrop-blur-xl bg-white/5 border border-white/20 rounded-2xl shadow-2xl'>
+          <motion.h2
+            className="text-4xl md:text-4xl font-extrabold mb-4 text-yellow-400"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            Unlock Premium Content with Shardeum
+          </motion.h2>
+          <motion.p
+            className="text-gray-300 max-w-2xl mx-auto mb-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            Pay only for what you want. No subscriptions. No middlemen.
+            Own your access with instant blockchain payments.
+          </motion.p>
+          <motion.button
+            onClick={isConnected ? openAccountModal : openConnectModal}
+            whileTap={{ scale: 0.9 }}
+            className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-bold hover:bg-yellow-300"
+          >
+            Get Started
+          </motion.button>
         </div>
       </section>
 
@@ -214,7 +217,7 @@ export default function App() {
       {/* Footer */}
       <footer className="p-6 border-t border-gray-800 text-center text-gray-500 text-sm">
         Built on Shardeum • AccessFi © 2025 •{" "}
-        <a href="https://github.com" className="hover:underline">
+        <a href="https://github.com/FizOkor" className="hover:underline">
           GitHub
         </a>
       </footer>
